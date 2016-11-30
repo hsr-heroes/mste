@@ -6,6 +6,10 @@ namespace AutoReservation.Dal
 {
     public class AutoReservationContext : DbContext
     {
+        public DbSet<Auto> Autos { get; set; }
+        public DbSet<Reservation> Reservationen { get; set; }
+        public DbSet<Kunde> Kunden { get; set; }
+
         public AutoReservationContext()
         {
             // Ensures that the database will be initialized
@@ -25,22 +29,22 @@ namespace AutoReservation.Dal
             // Use this for initial "code first" 
             //      - Database will be created by Entity Framework
             //      - Database will NOT be modified by Entity Framework
-            // Database.SetInitializer(new CreateDatabaseIfNotExists<AutoReservationContext>());
+            Database.SetInitializer(new CreateDatabaseIfNotExists<AutoReservationContext>());
 
             // Use this for real "code first" 
             //      - Database will be created by Entity Framework
             //      - Database will be modified by Entity Framework
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<AutoReservationContext, Configuration>());
+            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<AutoReservationContext, Configuration>());
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Set up hierarchical mapping in fluent API
-            //      Remarks:
-            //      This could not be done using attributes on business entities
-            //      since the discriminator (AutoKlasse) must not be part of the entity.
+            modelBuilder.Entity<Auto>()
+                .Map<LuxusklasseAuto>(m => m.Requires("AutoKlasse").HasValue(0))
+                .Map<MittelklasseAuto>(m => m.Requires("AutoKlasse").HasValue(1))
+                .Map<StandardAuto>(m => m.Requires("AutoKlasse").HasValue(2));
         }
     }
 }

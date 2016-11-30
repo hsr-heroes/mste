@@ -14,9 +14,9 @@ namespace AutoReservation.Ui.Factory
 
     public class NullAutoReservationService : IAutoReservationService
     {
-        public List<AutoDto> Autos => new List<AutoDto>();
-        public List<KundeDto> Kunden => new List<KundeDto>();
-        public List<ReservationDto> Reservationen => new List<ReservationDto>();
+        public IEnumerable<AutoDto> Autos => new List<AutoDto>();
+        public IEnumerable<KundeDto> Kunden => new List<KundeDto>();
+        public IEnumerable<ReservationDto> Reservationen => new List<ReservationDto>();
         public AutoDto GetAutoById(int id) => null;
         public KundeDto GetKundeById(int id) => null;
         public ReservationDto GetReservationByNr(int reservationsNr) => null;
