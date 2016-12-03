@@ -92,8 +92,7 @@ namespace AutoReservation.Service.Wcf
             using (var ctx = new AutoReservationContext())
             {
                 var entity = auto.ConvertToEntity();
-                ctx.Autos.Attach(entity);
-                ctx.Entry(entity).State = EntityState.Modified;
+                ctx.Autos.AddOrUpdate(entity);
                 ctx.SaveChanges();
                 return entity.ConvertToDto();
             }

@@ -8,17 +8,6 @@ namespace AutoReservation.Service.Wcf.Testing
     {
 
         private IAutoReservationService target;
-        protected override IAutoReservationService Target
-        {
-            get
-            {
-                if (target == null)
-                {
-                    target = new AutoReservationService();
-                }
-                return target;
-            }
-        }
-
+        protected override IAutoReservationService Target => target ?? (target = new AutoReservationService());
     }
 }
