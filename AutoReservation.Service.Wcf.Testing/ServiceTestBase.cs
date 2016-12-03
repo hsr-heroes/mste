@@ -303,19 +303,57 @@ namespace AutoReservation.Service.Wcf.Testing
         [TestMethod]
         public void UpdateAutoWithOptimisticConcurrencyTest()
         {
-            Assert.Inconclusive("Test not implemented.");
+            var a1 = Target.Autos.First(a => a.Id == 1);
+            var a2 = Target.Autos.First(a => a.Id == 1);
+            a1.Marke = "Test1";
+            Target.UpdateAuto(a1);
+            a2.Marke = "Test2";
+            try
+            {
+                Target.UpdateAuto(a2);
+                Assert.Fail("Should have thrown a concurrently modified exception!");
+            }
+            catch (Exception)
+            {
+            }
         }
 
         [TestMethod]
         public void UpdateKundeWithOptimisticConcurrencyTest()
         {
-            Assert.Inconclusive("Test not implemented.");
+            var k1 = Target.Kunden.First(k => k.Id == 1);
+            var k2 = Target.Kunden.First(k => k.Id == 1);
+            k1.Vorname = "Franz";
+            Target.UpdateKunde(k1);
+            k2.Nachname = "Müller";
+            try
+            {
+                Target.UpdateKunde(k2);
+                Assert.Fail("Should have thrown concurrently modiefied exception!");
+            }
+            catch (Exception)
+            {
+                
+            }
         }
 
         [TestMethod]
         public void UpdateReservationWithOptimisticConcurrencyTest()
         {
-            Assert.Inconclusive("Test not implemented.");
+            var r1 = Target.Reservationen.First(r => r.ReservationsNr == 1);
+            var r2 = Target.Reservationen.First(r => r.ReservationsNr == 1);
+            r1.Bis = new DateTime(1991, 12, 12);
+            Target.UpdateReservation(r1);
+            r2.Bis = new DateTime(1991, 12, 12);
+            try
+            {
+                Target.UpdateReservation(r2);
+                Assert.Fail("Should have thrown concurrently modiefied exception!");
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         #endregion
