@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <module name="AutoReservationServiceModule">
   <!-- Injection of NullObject as long as no concrete factory exists -->
-  <bind service="AutoReservation.Ui.Factory.IServiceFactory, AutoReservation.Ui"
+  <!--<bind service="AutoReservation.Ui.Factory.IServiceFactory, AutoReservation.Ui"
         to="AutoReservation.Ui.Factory.LocalDataAccessServiceFactory, AutoReservation.Ui"
-        scope="singleton"/>
+        scope="singleton"/>-->
 
 
   <!-- Injection of NullObject as long as no concrete factory exists -->
@@ -17,9 +17,9 @@
         scope="singleton"/>-->
 
   <!-- Injection used when the service is somewhere else (using WCF) -->
-  <!--<bind service="AutoReservation.Ui.Factory.IServiceFactory, AutoReservation.Ui"
+  <bind service="AutoReservation.Ui.Factory.IServiceFactory, AutoReservation.Ui"
         to="AutoReservation.Ui.Factory.RemoteDataAccessServiceFactory, AutoReservation.Ui"
-        scope="singleton"/>-->
+        scope="singleton"/>
 </module>
 
 
