@@ -233,67 +233,54 @@ namespace AutoReservation.Service.Wcf.Testing
         [TestMethod]
         public void UpdateAutoTest()
         {
-            Target.UpdateAuto(new AutoDto
-            {
-                Id = 2,
-                AutoKlasse = AutoKlasse.Mittelklasse,
-                Tagestarif = 150,
-                Marke = "Ferarri"
-            });
+            var auto = Target.Autos.First(a => a.Id == 2);
+            auto.Marke = "Ferarri";
+            auto.Tagestarif = 150;
+            Target.UpdateAuto(auto);
             AssertAuto(Target.Autos.First(a => a.Id == 2), 2, AutoKlasse.Mittelklasse, 0, 150, "Ferarri");
         }
 
         [TestMethod]
         public void UpdateAutoBasistarifOnlyForLuxusklasseTest()
         {
-            Target.UpdateAuto(new AutoDto
-            {
-                Id = 2,
-                AutoKlasse = AutoKlasse.Mittelklasse,
-                Basistarif = 10,
-                Tagestarif = 150,
-                Marke = "Ferarri"
-            });
+            var auto = Target.Autos.First(a => a.Id == 2);
+            auto.Marke = "Ferarri";
+            auto.Tagestarif = 150;
+            auto.Basistarif = 10;
+            Target.UpdateAuto(auto);
             AssertAuto(Target.Autos.First(a => a.Id == 2), 2, AutoKlasse.Mittelklasse, 0, 150, "Ferarri");
-            Target.UpdateAuto(new AutoDto
-            {
-                Id = 3,
-                AutoKlasse = AutoKlasse.Luxusklasse,
-                Basistarif = 999,
-                Tagestarif = 888,
-                Marke = "Ferarri"
-            });
+            var auto2 = Target.Autos.First(a => a.Id == 3);
+            auto2.Basistarif = 999;
+            auto2.Tagestarif = 888;
+            auto2.Marke = "Ferarri";
+            Target.UpdateAuto(auto2);
             AssertAuto(Target.Autos.First(a => a.Id == 3), 3, AutoKlasse.Luxusklasse, 999, 888, "Ferarri");
         }
 
         [TestMethod]
         public void UpdateKundeTest()
         {
-            Target.UpdateKunde(new KundeDto
-            {
-                Geburtsdatum = new DateTime(1900, 1, 1),
-                Id = 1,
-                Nachname = "tester",
-                Vorname = "testee"
-            });
+            var kunde = Target.Kunden.First(k => k.Id == 1);
+            kunde.Geburtsdatum = new DateTime(1900, 1, 1);
+            kunde.Nachname = "tester";
+            kunde.Vorname = "testee";
+            Target.UpdateKunde(kunde);
             AssertKunde(Target.Kunden.First(k => k.Id == 1), 1, "tester", "testee", new DateTime(1900, 1, 1));
         }
 
         [TestMethod]
         public void UpdateReservationTest()
         {
-            Target.UpdateReservation(new ReservationDto
-            {
-                Auto = new AutoDto {Id = 2},
-                Von = new DateTime(2016, 12, 3),
-                Bis = new DateTime(2016, 12, 4),
-                Kunde = new KundeDto {Id = 2},
-                ReservationsNr = 1
-            });
             var res = Target.Reservationen.First(r => r.ReservationsNr == 1);
-            AssertReservation(res, 1, new DateTime(2016, 12, 3), new DateTime(2016, 12, 4));
-            AssertAuto(res.Auto, 2, AutoKlasse.Mittelklasse, 0, 120, "VW Golf");
-            AssertKunde(res.Kunde, 2, "Beil", "Timo", new DateTime(1980, 09, 09));
+            res.Von = new DateTime(2016, 12, 3);
+            res.Bis = new DateTime(2016, 12, 4);
+            res.Auto = Target.Autos.First(a => a.Id == 2);
+            res.Kunde = Target.Kunden.First(k => k.Id == 2);
+            Target.UpdateReservation(res);
+            var updatedRes = Target.Reservationen.First(r => r.ReservationsNr == 1);
+            AssertReservation(updatedRes, 1, new DateTime(2016, 12, 3), new DateTime(2016, 12, 4));
+            AssertAuto(updatedRes.Auto, 2, AutoKlasse.Mittelklasse, 0, 120, "VW Golf");
+            AssertKunde(updatedRes.Kunde, 2, "Beil", "Timo", new DateTime(1980, 09, 09));
         }
 
         #endregion

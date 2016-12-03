@@ -15,6 +15,7 @@ namespace AutoReservation.Dal.Entities
         [MaxLength(20)]
         public string Vorname { get; set; }
         public DateTime Geburtsdatum { get; set; }
+        [Timestamp]
         public byte[] RowVersion { get; set; }
         public int ReservationId { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
