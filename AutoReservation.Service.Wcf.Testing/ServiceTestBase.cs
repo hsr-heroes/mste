@@ -300,8 +300,9 @@ namespace AutoReservation.Service.Wcf.Testing
                 Target.UpdateAuto(a2);
                 Assert.Fail("Should have thrown a concurrently modified exception!");
             }
-            catch (Exception)
+            catch (FaultException<AutoDto> a)
             {
+                AssertAuto(a.Detail, 1, AutoKlasse.Standard, 0, 50, "Test1");
             }
         }
 
@@ -318,9 +319,9 @@ namespace AutoReservation.Service.Wcf.Testing
                 Target.UpdateKunde(k2);
                 Assert.Fail("Should have thrown concurrently modiefied exception!");
             }
-            catch (Exception)
+            catch (FaultException<KundeDto> e)
             {
-                
+                AssertKunde(e.Detail, 1, "Nass", "Franz", new DateTime(1981, 5, 5));
             }
         }
 
@@ -337,9 +338,9 @@ namespace AutoReservation.Service.Wcf.Testing
                 Target.UpdateReservation(r2);
                 Assert.Fail("Should have thrown concurrently modiefied exception!");
             }
-            catch (Exception)
+            catch (FaultException<ReservationDto> e)
             {
-
+                AssertReservation(e.Detail, 1, new DateTime(2020, 1, 10), new DateTime(1991, 12, 12));
             }
         }
 

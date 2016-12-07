@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.ServiceModel;
 using AutoReservation.BusinessLayer;
 using AutoReservation.Common.DataTransferObjects;
 using AutoReservation.Common.Interfaces;
+using AutoReservation.Dal.Entities;
 
 namespace AutoReservation.Service.Wcf
 {
@@ -25,13 +27,17 @@ namespace AutoReservation.Service.Wcf
             }
         }
 
-        public IEnumerable<AutoDto> Autos { get
+        public IEnumerable<AutoDto> Autos
         {
+            get
+            {
                 WriteActualMethod();
-            return service.Autos.ConvertToDtos();
+                return service.Autos.ConvertToDtos();
             }
         }
-        public IEnumerable<ReservationDto> Reservationen { get
+        public IEnumerable<ReservationDto> Reservationen
+        {
+            get
             {
                 WriteActualMethod();
                 return service.Reservationen.ConvertToDtos();
@@ -43,7 +49,7 @@ namespace AutoReservation.Service.Wcf
             WriteActualMethod();
             return service.InsertReservation(reservation.ConvertToEntity()).ConvertToDto();
         }
-
+        
         public ReservationDto UpdateReservation(ReservationDto reservation)
         {
             WriteActualMethod();
@@ -51,11 +57,11 @@ namespace AutoReservation.Service.Wcf
             {
                 return service.UpdateReservation(reservation.ConvertToEntity()).ConvertToDto();
             }
-            catch (Exception)
+            catch (LocalOptimisticConcurrencyException<Reservation> e)
             {
-                throw new LocalOptimisticConcurrencyException<ReservationDto>("concurrent modification");
+                throw new FaultException<ReservationDto>(e.MergedEntity.ConvertToDto());
             }
-           
+
         }
 
         public AutoDto InsertAuto(AutoDto auto)
@@ -63,7 +69,7 @@ namespace AutoReservation.Service.Wcf
             WriteActualMethod();
             return service.InsertAuto(auto.ConvertToEntity()).ConvertToDto();
         }
-
+        
         public AutoDto UpdateAuto(AutoDto auto)
         {
             WriteActualMethod();
@@ -71,9 +77,9 @@ namespace AutoReservation.Service.Wcf
             {
                 return service.UpdateAuto(auto.ConvertToEntity()).ConvertToDto();
             }
-            catch (Exception)
+            catch (LocalOptimisticConcurrencyException<Auto> e)
             {
-               throw new LocalOptimisticConcurrencyException<AutoDto>("concurrent modification");
+                throw new FaultException<AutoDto>(e.MergedEntity.ConvertToDto());
             }
         }
 
@@ -96,9 +102,9 @@ namespace AutoReservation.Service.Wcf
             {
                 return service.UpdateKunde(kunde.ConvertToEntity()).ConvertToDto();
             }
-            catch (Exception)
+            catch (LocalOptimisticConcurrencyException<Kunde> e)
             {
-                throw new LocalOptimisticConcurrencyException<KundeDto>("");
+                throw new FaultException<KundeDto>(e.MergedEntity.ConvertToDto());
             }
         }
 
