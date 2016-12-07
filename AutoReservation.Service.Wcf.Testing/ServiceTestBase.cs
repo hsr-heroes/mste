@@ -217,7 +217,7 @@ namespace AutoReservation.Service.Wcf.Testing
         [TestMethod]
         public void DeleteReservationTest()
         {
-            Target.DeleteReservation(new ReservationDto {ReservationsNr = 1});
+            Target.DeleteReservation(new ReservationDto {ReservationsNr = 1, Auto = new AutoDto(), Kunde = new KundeDto()});
             var remainingRes = Target.Reservationen.ToList();
             Assert.AreEqual(2, remainingRes.Count);
             AssertReservation(remainingRes[0], 2, new DateTime(2020, 01, 10), new DateTime(2020, 01, 20));

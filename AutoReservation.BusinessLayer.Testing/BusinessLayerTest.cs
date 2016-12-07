@@ -31,6 +31,7 @@ namespace AutoReservation.BusinessLayer.Testing
         [TestMethod]
         public void UpdateAutoTest()
         {
+            
             Assert.Inconclusive("Test not implemented.");
         }
 
