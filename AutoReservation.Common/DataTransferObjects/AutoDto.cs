@@ -1,8 +1,10 @@
-﻿using System.Text;
+﻿using System.Runtime.Serialization;
+using System.Text;
 using AutoReservation.Common.DataTransferObjects.Core;
 
 namespace AutoReservation.Common.DataTransferObjects
 {
+    [DataContract]
     public class AutoDto : DtoBase<AutoDto>
     {
 
@@ -29,12 +31,17 @@ namespace AutoReservation.Common.DataTransferObjects
 
         public override string ToString()
             => $"{Id}; {Marke}; {Tagestarif}; {Basistarif}; {AutoKlasse}";
-
+        [DataMember]
         public AutoKlasse AutoKlasse { get; set; }
+        [DataMember]
         public int Id { get; set; }
+        [DataMember]
         public string Marke { get; set; }
+        [DataMember]
         public int Tagestarif { get; set; }
+        [DataMember]
         public byte[] RowVersion { get; set; }
+        [DataMember]
         public int Basistarif { get; set; }
     }
 }
