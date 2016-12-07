@@ -1,4 +1,5 @@
-﻿using AutoReservation.Dal;
+﻿using System;
+using AutoReservation.Dal;
 using AutoReservation.Dal.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -55,88 +56,87 @@ namespace AutoReservation.BusinessLayer
 
         public Reservation InsertReservation(Reservation reservation)
         {
-            using (var ctx = new AutoReservationContext())
-            {
-                ctx.Reservationen.Add(reservation);
-                ctx.SaveChanges();
-                return reservation;
-            }
+            return InsertEntity(reservation, ctx => ctx.Reservationen);
         }
 
         public Reservation UpdateReservation(Reservation reservation)
         {
-            using (var ctx = new AutoReservationContext())
-            {
-                ctx.Entry(reservation).State = EntityState.Modified;
-                ctx.SaveChanges();
-                return reservation;
-            }
+            return UpdateEntity(reservation);
         }
 
         public Auto InsertAuto(Auto auto)
         {
-            using (var ctx = new AutoReservationContext())
-            {
-                ctx.Autos.Add(auto);
-                ctx.SaveChanges();
-                return auto;
-            }
+            return InsertEntity(auto, ctx => ctx.Autos);
         }
 
         public Auto UpdateAuto(Auto auto)
         {
-            using (var ctx = new AutoReservationContext())
-            {
-                ctx.Entry(auto).State = EntityState.Modified;
-                ctx.SaveChanges();
-                return auto;
-            }
+            return UpdateEntity(auto);
         }
 
         public void DeleteAuto(Auto auto)
         {
-            using (var ctx = new AutoReservationContext())
-            {
-                ctx.Autos.Remove(ctx.Autos.FirstOrDefault(e => e.Id == auto.Id));
-                ctx.SaveChanges();
-            }
+            DeleteEntity(ctx => ctx.Autos, e => e.Id == auto.Id);
         }
 
         public Kunde InsertKunde(Kunde kunde)
         {
-            using (var ctx = new AutoReservationContext())
-            {
-                ctx.Kunden.Add(kunde);
-                ctx.SaveChanges();
-                return kunde;
-            }
+            return InsertEntity(kunde, ctx => ctx.Kunden);
         }
 
         public Kunde UpdateKunde(Kunde kunde)
         {
-            using (var ctx = new AutoReservationContext())
-            {
-                ctx.Entry(kunde).State = EntityState.Modified;
-                ctx.SaveChanges();
-                return kunde;
-            }
+            return UpdateEntity(kunde);
         }
 
         public void DeleteKunde(Kunde kunde)
         {
-            using (var ctx = new AutoReservationContext())
-            {
-                ctx.Kunden.Remove(ctx.Kunden.FirstOrDefault(e => e.Id == kunde.Id));
-                ctx.SaveChanges();
-            }
+            DeleteEntity(ctx => ctx.Kunden, e => e.Id == kunde.Id);
         }
 
         public void DeleteReservation(Reservation reservation)
         {
+            DeleteEntity(ctx => ctx.Reservationen, e => e.ReservationsNr == reservation.ReservationsNr);
+        }
+
+        private static void DeleteEntity<T>(Func<AutoReservationContext, DbSet<T>> setSelector, Func<T, bool> pred ) where T : class
+        {
             using (var ctx = new AutoReservationContext())
             {
-                ctx.Reservationen.Remove(ctx.Reservationen.FirstOrDefault(e => e.ReservationsNr == reservation.ReservationsNr));
+                var dbSet = setSelector(ctx);
+                var toRemove = dbSet.FirstOrDefault(pred);
+                if (toRemove != null)
+                {
+                    dbSet.Remove(toRemove);
+                    ctx.SaveChanges();
+                }
+            }
+        }
+
+        private static T InsertEntity<T>(T entity, Func<AutoReservationContext, DbSet<T>> setSelector) where T : class
+        {
+            using (var ctx = new AutoReservationContext())
+            {
+                setSelector(ctx).Add(entity);
                 ctx.SaveChanges();
+                return entity;
+            }
+        }
+
+        private static T UpdateEntity<T>(T entity) where T : class
+        {
+            using (var ctx = new AutoReservationContext())
+            {
+                try
+                {
+                    ctx.Entry(entity).State = EntityState.Modified;
+                    ctx.SaveChanges();
+                    return entity;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw CreateLocalOptimisticConcurrencyException(ctx, entity);
+                }
             }
         }
     }

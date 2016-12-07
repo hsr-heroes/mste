@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Migrations;
 using System.Diagnostics;
-using System.Linq;
 using AutoReservation.BusinessLayer;
 using AutoReservation.Common.DataTransferObjects;
 using AutoReservation.Common.Interfaces;
-using AutoReservation.Dal;
 
 namespace AutoReservation.Service.Wcf
 {
